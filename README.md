@@ -99,25 +99,6 @@ Forecasted revenue trends
 
 Insights will be delivered through an interactive Streamlit dashboard designed for hospital administrators and financial analysts.
 
-Project Structure
-hospital-revenue-ai
-│
-├── data
-│   ├── cleaned_claim_dataset.csv
-│   ├── monthly_revenue_dataset.csv
-│   ├── claim_kpi_dataset.csv
-│   ├── department_profitability.csv
-│   └── hospital_kpi_summary.csv
-│
-├── src
-│   ├── data_preprocessing.py
-│   ├── revenue_kpi_analysis.py
-|
-├── models
-│   ├── denial_prediction_model.py
-│
-└── README.md
-
 Technologies Used
 
 Python

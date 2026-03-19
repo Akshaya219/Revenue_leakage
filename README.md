@@ -177,3 +177,4 @@ Faster accounts receivable turnover
 Improved financial forecasting accuracy
 
 Early detection of billing anomalies
+# Revenue_leakage

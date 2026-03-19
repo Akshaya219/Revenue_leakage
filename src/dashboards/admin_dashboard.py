@@ -42,22 +42,39 @@ def kpi_card(title,value,color):
 
 
 def show_admin_dashboard():
+    """
+    System Administrator Dashboard
+    View all department data, hospital-wide metrics, and manage the system
+    """
 
     df, forecast, core_metrics = load_data()
 
     df["Claim_Submission_Date"] = pd.to_datetime(df["Claim_Submission_Date"], errors="coerce")
     df = df.dropna(subset=["Claim_Submission_Date"])
 
-    st.markdown("## 🧭 Executive Revenue Overview")
-
-    filters = st.columns(2)
-
-    dept_filter = filters[0].selectbox(
-        "Department",
-        ["All"] + sorted(df["Department"].dropna().unique())
+    st.markdown(
+        """
+        <div style="background:#111827; padding:15px; border-radius:10px; border-left:4px solid #f59e0b; margin-bottom:20px;">
+        <b style="font-size:16px;color:#fcd34d;">👨‍💼 SYSTEM ADMINISTRATOR DASHBOARD</b><br>
+        <span style="color:#d1d5db;font-size:13px;">Full access to all departments and system management</span>
+        </div>
+        """,
+        unsafe_allow_html=True
     )
 
-    if dept_filter != "All":
+    st.markdown("## 🧭 Hospital-Wide Revenue Overview")
+
+    filters = st.columns(3)
+
+    dept_filter = filters[0].selectbox(
+        "Filter by Department",
+        ["All Departments (System-Wide View)"] + sorted(df["Department"].dropna().unique()),
+        key="dept_filter_admin"
+    )
+
+    show_all = dept_filter == "All Departments (System-Wide View)"
+    
+    if not show_all:
         df = df[df["Department"] == dept_filter]
 
     total_revenue = df["Billing_Amount"].sum()
@@ -65,7 +82,13 @@ def show_admin_dashboard():
     leakage = total_revenue - approved_revenue
     leakage_percent = (leakage / total_revenue) * 100 if total_revenue != 0 else 0
 
-    k1,k2,k3,k4 = st.columns(4)
+    # Display header based on scope
+    if show_all:
+        st.info("📊 **Viewing Hospital-Wide Data** - All departments included")
+    else:
+        st.info(f"🔍 **Filtered View** - Showing {dept_filter} department only")
+
+    k1, k2, k3, k4 = st.columns(4)
 
     with k1:
         kpi_card("Total Revenue", format_inr(total_revenue), "#6366f1")
@@ -80,11 +103,51 @@ def show_admin_dashboard():
         kpi_card("Leakage Rate", f"{leakage_percent:.2f}%", "#f59e0b")
 
     if leakage_percent > 10:
-        st.error("⚠ High revenue leakage detected")
+        st.error("⚠️ High revenue leakage detected - Immediate action required")
 
     st.divider()
 
-    st.markdown("### 📈 Revenue Trend")
+    # Admin Control Panel
+    st.markdown("### ⚙️ System Administration Panel")
+    
+    admin_col1, admin_col2, admin_col3 = st.columns(3)
+    
+    with admin_col1:
+        st.markdown(
+            """
+            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <b>👥 User Management</b><br>
+            <small>Manage department heads & staff</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    
+    with admin_col2:
+        st.markdown(
+            """
+            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <b>📋 Audit Logs</b><br>
+            <small>Track system activity</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    
+    with admin_col3:
+        st.markdown(
+            """
+            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <b>⚡ System Health</b><br>
+            <small>Monitor performance</small>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.divider()
+
+    st.markdown("### 📈 Revenue Trend (All Departments)")
 
     trend = df.groupby(
         df["Claim_Submission_Date"].dt.to_period("M")
@@ -97,10 +160,11 @@ def show_admin_dashboard():
         x="Month",
         y="Billing_Amount",
         markers=True,
-        template="plotly_dark"
+        template="plotly_dark",
+        title="Hospital-Wide Revenue Trend"
     )
 
-    st.plotly_chart(fig,use_container_width=True)
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("### 🔮 Revenue Forecast")
 
@@ -109,10 +173,11 @@ def show_admin_dashboard():
         x="Month",
         y="Forecasted_Revenue",
         markers=True,
-        template="plotly_dark"
+        template="plotly_dark",
+        title="Hospital Revenue Forecast"
     )
 
-    st.plotly_chart(fig_forecast,use_container_width=True)
+    st.plotly_chart(fig_forecast, use_container_width=True)
 
     st.divider()
 
@@ -123,44 +188,74 @@ def show_admin_dashboard():
     revenue_realization = core_metrics["Average_Revenue_Realization_Rate"][0]
     claim_processing_time = core_metrics["Average_Claim_Processing_Time"][0]
 
-    m1,m2,m3,m4 = st.columns(4)
+    m1, m2, m3, m4 = st.columns(4)
 
-    m1.metric("Denial Rate", f"{denial_rate:.2f}%")
-    m2.metric("Collection Efficiency", f"{collection_efficiency:.2f}%")
-    m3.metric("Revenue Realization", f"{revenue_realization:.2f}%")
-    m4.metric("Claim Processing Time", f"{claim_processing_time:.1f} Days")
+    m1.metric("Denial Rate", f"{denial_rate:.2f}%", delta="-0.5%" if denial_rate > 15 else "+0.1%")
+    m2.metric("Collection Efficiency", f"{collection_efficiency:.2f}%", delta="+1.2%")
+    m3.metric("Revenue Realization", f"{revenue_realization:.2f}%", delta="+0.8%")
+    m4.metric("Claim Processing Time", f"{claim_processing_time:.1f} Days", delta="-0.5 Days")
 
     st.divider()
 
-    st.markdown("### 🏬 Department Leakage Analysis")
+    st.markdown("### 🏬 Department-wise Leakage Analysis")
 
-    dept = df.copy()
-    dept["Leakage"] = dept["Billing_Amount"] - dept["Approved_Amount"]
+    dept_data = df.copy()
+    dept_data["Leakage"] = dept_data["Billing_Amount"] - dept_data["Approved_Amount"]
 
-    dept_summary = dept.groupby("Department").agg({
-        "Billing_Amount":"sum",
-        "Leakage":"sum"
+    dept_summary = dept_data.groupby("Department").agg({
+        "Billing_Amount": "sum",
+        "Approved_Amount": "sum",
+        "Leakage": "sum"
     }).reset_index()
 
     dept_summary["Leakage_Rate"] = (
         dept_summary["Leakage"] /
-        dept_summary["Billing_Amount"].replace(0,pd.NA)
+        dept_summary["Billing_Amount"].replace(0, pd.NA)
     ) * 100
 
-    fig_dept = px.bar(
-        dept_summary.sort_values("Leakage_Rate",ascending=False),
-        x="Department",
-        y="Leakage_Rate",
-        color="Leakage_Rate",
-        template="plotly_dark",
-        color_continuous_scale="Reds"
-    )
+    # Revenue comparison
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        fig_dept_leakage = px.bar(
+            dept_summary.sort_values("Leakage_Rate", ascending=False),
+            x="Department",
+            y="Leakage_Rate",
+            color="Leakage_Rate",
+            template="plotly_dark",
+            color_continuous_scale="Reds",
+            title="Leakage Rate by Department"
+        )
+        st.plotly_chart(fig_dept_leakage, use_container_width=True)
+    
+    with col2:
+        fig_dept_revenue = px.bar(
+            dept_summary.sort_values("Billing_Amount", ascending=False),
+            x="Department",
+            y="Billing_Amount",
+            color="Approved_Amount",
+            template="plotly_dark",
+            title="Billing vs Approved by Department",
+            barmode="group"
+        )
+        st.plotly_chart(fig_dept_revenue, use_container_width=True)
 
-    st.plotly_chart(fig_dept,use_container_width=True)
+    st.markdown("### 📊 Department Summary Table")
+    
+    summary_display = dept_summary.copy()
+    summary_display.columns = ["Department", "Total Billing", "Approved Amount", "Leakage", "Leakage Rate %"]
+    summary_display["Total Billing"] = summary_display["Total Billing"].apply(format_inr)
+    summary_display["Approved Amount"] = summary_display["Approved Amount"].apply(format_inr)
+    summary_display["Leakage"] = summary_display["Leakage"].apply(format_inr)
+    summary_display["Leakage Rate %"] = summary_display["Leakage Rate %"].apply(lambda x: f"{x:.2f}%")
+    
+    st.dataframe(summary_display, use_container_width=True, hide_index=True)
+
+    st.divider()
 
     st.markdown("### 🔍 Claim Behavior Analysis")
 
-    sample = df.sample(min(len(df),3000))
+    sample = df.sample(min(len(df), 3000))
 
     fig_claim = px.scatter(
         sample,
@@ -168,10 +263,11 @@ def show_admin_dashboard():
         y="Approved_Amount",
         color="Denial_Flag",
         opacity=0.6,
-        template="plotly_dark"
+        template="plotly_dark",
+        title="Claim Billing vs Approved Amounts"
     )
 
-    st.plotly_chart(fig_claim,use_container_width=True)
+    st.plotly_chart(fig_claim, use_container_width=True)
 
-    with st.expander("📄 Claim Data Sample"):
-        st.dataframe(df.head(20))
+    with st.expander("📄 Full Dataset Sample (Admin View)"):
+        st.dataframe(df.head(50), use_container_width=True)

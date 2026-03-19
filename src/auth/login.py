@@ -1,4 +1,7 @@
+"""User authentication with credential and department verification."""
+
 import sqlite3
+from typing import Dict, Optional
 
 try:
     from .db import get_connection, create_users_table
@@ -8,38 +11,46 @@ except ImportError:
     from auth.security import verify_password
 
 
-def authenticate_user(username, password):
+def authenticate_user(
+    username: str,
+    password: str,
+    department: Optional[str] = None
+) -> Optional[Dict]:
+    """Authenticate user with credentials and optional department verification.
+    
+    Args:
+        username: User's login username
+        password: User's login password
+        department: Optional department to verify (for dept heads)
+        
+    Returns:
+        User dictionary with id, username, email, role, department on success
+        None if authentication fails
+    """
     if not username or not password:
         return None
 
-    conn = None
-    user = None
+    conn: Optional[sqlite3.Connection] = None
     try:
-        # Ensure schema exists before querying.
         create_users_table()
         conn = get_connection()
         cursor = conn.cursor()
-
         cursor.execute(
-            """
-            SELECT id, username, email, role, password_hash, two_factor_enabled
-            FROM users
-            WHERE username=?
-            """,
+            "SELECT id, username, email, role, department, password_hash, two_factor_enabled FROM users WHERE username=?",
             (username,)
         )
-
         user = cursor.fetchone()
     except (sqlite3.Error, RuntimeError):
         return None
     finally:
-        if conn is not None:
+        if conn:
             conn.close()
 
-    if user is None:
+    if user is None or not verify_password(password, user["password_hash"]):
         return None
 
-    if not verify_password(password, user["password_hash"]):
+    # Verify department match for department heads
+    if department and user["department"] != department:
         return None
 
     return {
@@ -47,5 +58,6 @@ def authenticate_user(username, password):
         "username": user["username"],
         "email": user["email"],
         "role": user["role"],
+        "department": user["department"],
         "two_factor_enabled": user["two_factor_enabled"]
     }

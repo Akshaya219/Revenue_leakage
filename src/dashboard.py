@@ -6,8 +6,10 @@ from dashboards.analyst_dashboard import show_analyst_dashboard
 from dashboards.department_dashboard import show_department_dashboard
 from dashboards.doctor_dashboard import show_doctor_dashboard
 
-from auth.db import create_users_table
+from auth.db import create_users_table, migrate_add_department_column
 from auth.login_page import login_screen
+from auth.user_manager import initialize_default_users
+from auth.access_control import require_authentication, get_user_department, show_department_info
 from ui.theme import apply_theme
 
 st.set_page_config(
@@ -21,8 +23,11 @@ apply_theme()
 
 try:
     create_users_table()
+    migrate_add_department_column()
+    # Initialize default users on first run
+    initialize_default_users()
 except Exception as exc:
-    st.error(f"Authentication database initialization failed: {exc}")
+    st.error(f"❌ Authentication database initialization failed: {exc}")
     st.stop()
 
 if "authenticated" not in st.session_state:
@@ -33,11 +38,13 @@ if not st.session_state["authenticated"]:
     st.stop()
 
 try:
+    require_authentication()
     role = st.session_state["role"]
     user = st.session_state["user"]["username"]
+    department = st.session_state.get("department", "Unknown")
 except KeyError:
     st.session_state.clear()
-    st.error("Session data is invalid. Please log in again.")
+    st.error("❌ Session data is invalid. Please log in again.")
     st.stop()
 
 with st.sidebar:
@@ -51,28 +58,52 @@ with st.sidebar:
 
     st.divider()
 
-    st.markdown(
-        f"""
-        <div style="
-        background:#1e293b;
-        padding:15px;
-        border-radius:10px;
-        margin-bottom:20px;
-        ">
-        <b>User:</b> {user}<br>
-        <b>Role:</b> {role}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Display different info based on role
+    role = st.session_state.get("role", "Unknown")
+    department = st.session_state.get("department", "Unknown")
+    user = st.session_state["user"]["username"]
+    
+    if role == "admin":
+        st.markdown(
+            f"""
+            <div style="
+            background:linear-gradient(135deg, #f59e0b, #1e293b);
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:20px;
+            border-left:4px solid #f59e0b;
+            ">
+            <b>👨‍💼 Admin User:</b> {user}<br>
+            <b>🔑 Access Level:</b> System Administrator<br>
+            <b>📊 Visible Data:</b> All Departments
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.markdown(
+            f"""
+            <div style="
+            background:#1e293b;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:20px;
+            ">
+            <b>👤 User:</b> {user}<br>
+            <b>🏢 Department:</b> {department}<br>
+            <b>📊 Role:</b> {role.replace('_', ' ').title()}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
-    if st.button("Logout", use_container_width=True):
+    if st.button("🚪 Logout", use_container_width=True):
         st.session_state.clear()
         st.rerun()
 
 st.markdown(
     """
-    <h1 style='font-size:36px;'>Hospital Revenue Intelligence Platform</h1>
+    <h1 style='font-size:36px;'>🏥 Hospital Revenue Intelligence Platform</h1>
     """,
     unsafe_allow_html=True
 )
@@ -80,6 +111,8 @@ st.markdown(
 st.markdown("---")
 
 if role == "admin":
+    st.markdown(f"### 👨‍💼 Welcome, System Administrator")
+    st.warning("🔑 You have full system access to all departments and administrative functions.")
     show_admin_dashboard()
 
 elif role == "finance_manager":
@@ -89,10 +122,12 @@ elif role == "data_analyst":
     show_analyst_dashboard()
 
 elif role == "department_head":
+    st.markdown(f"### Welcome, {department} Department Head")
+    st.info(f"👋 You can only view revenue and metrics for the **{department}** department.")
     show_department_dashboard()
 
 elif role == "doctor":
     show_doctor_dashboard()
 
 else:
-    st.error("Role not recognized")
+    st.error(f"❌ Role '{role}' is not recognized. Please contact your administrator.")

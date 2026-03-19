@@ -44,8 +44,11 @@ def login_screen():
     login = st.button("Login", use_container_width=True)
 
     if login:
-
-        user = authenticate_user(username, password)
+        try:
+            user = authenticate_user(username, password)
+        except Exception:
+            st.error("Authentication service is unavailable. Please try again.")
+            return
 
         if user:
 

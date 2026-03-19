@@ -1,0 +1,16 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+v/
+.venv/
+venv/
+
+# Local database and environment files
+*.db
+.env
+
+# OS/editor noise
+.DS_Store
+.vscode/

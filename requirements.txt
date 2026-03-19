@@ -1,0 +1,13 @@
+# Core data and ML stack
+pandas
+numpy
+scikit-learn
+statsmodels
+joblib
+
+# Dashboard and visualization
+streamlit
+plotly
+
+# Authentication
+bcrypt

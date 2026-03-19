@@ -6,6 +6,7 @@ from dashboards.analyst_dashboard import show_analyst_dashboard
 from dashboards.department_dashboard import show_department_dashboard
 from dashboards.doctor_dashboard import show_doctor_dashboard
 
+from auth.db import create_users_table
 from auth.login_page import login_screen
 from ui.theme import apply_theme
 
@@ -18,6 +19,12 @@ st.set_page_config(
 
 apply_theme()
 
+try:
+    create_users_table()
+except Exception as exc:
+    st.error(f"Authentication database initialization failed: {exc}")
+    st.stop()
+
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
 
@@ -25,8 +32,13 @@ if not st.session_state["authenticated"]:
     login_screen()
     st.stop()
 
-role = st.session_state["role"]
-user = st.session_state["user"]["username"]
+try:
+    role = st.session_state["role"]
+    user = st.session_state["user"]["username"]
+except KeyError:
+    st.session_state.clear()
+    st.error("Session data is invalid. Please log in again.")
+    st.stop()
 
 with st.sidebar:
 

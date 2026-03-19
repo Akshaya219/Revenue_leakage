@@ -28,10 +28,15 @@ def kpi_card(title,value,color):
     st.markdown(
         f"""
         <div style="
-        background: linear-gradient(135deg,{color},#1e293b);
+        background: linear-gradient(135deg,{color},rgba(15,23,42,0.62));
+        border:1px solid rgba(148,163,184,0.30);
         padding:20px;
         border-radius:12px;
         text-align:center;
+        box-shadow:0px 12px 28px rgba(2,6,23,0.36);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        color:#f8fafc;
         ">
         <h4 style="margin:0">{title}</h4>
         <h2 style="margin:0">{value}</h2>
@@ -54,9 +59,9 @@ def show_admin_dashboard():
 
     st.markdown(
         """
-        <div style="background:#111827; padding:15px; border-radius:10px; border-left:4px solid #f59e0b; margin-bottom:20px;">
-        <b style="font-size:16px;color:#fcd34d;">👨‍💼 SYSTEM ADMINISTRATOR DASHBOARD</b><br>
-        <span style="color:#d1d5db;font-size:13px;">Full access to all departments and system management</span>
+        <div style="background:rgba(69,26,3,0.46); padding:15px; border-radius:10px; border-left:4px solid #f59e0b; margin-bottom:20px; border:1px solid rgba(245,158,11,0.45); box-shadow:0px 10px 24px rgba(2,6,23,0.38); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);">
+        <b style="font-size:16px;color:#fde68a;">👨‍💼 SYSTEM ADMINISTRATOR DASHBOARD</b><br>
+        <span style="color:#fcd34d;font-size:13px;">Full access to all departments and system management</span>
         </div>
         """,
         unsafe_allow_html=True
@@ -115,7 +120,7 @@ def show_admin_dashboard():
     with admin_col1:
         st.markdown(
             """
-            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <div style="background:rgba(15,23,42,0.58); padding:15px; border-radius:8px; text-align:center; border:1px solid rgba(148,163,184,0.30); box-shadow:0px 10px 24px rgba(2,6,23,0.34); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:#e2e8f0;">
             <b>👥 User Management</b><br>
             <small>Manage department heads & staff</small>
             </div>
@@ -126,7 +131,7 @@ def show_admin_dashboard():
     with admin_col2:
         st.markdown(
             """
-            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <div style="background:rgba(15,23,42,0.58); padding:15px; border-radius:8px; text-align:center; border:1px solid rgba(148,163,184,0.30); box-shadow:0px 10px 24px rgba(2,6,23,0.34); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:#e2e8f0;">
             <b>📋 Audit Logs</b><br>
             <small>Track system activity</small>
             </div>
@@ -137,7 +142,7 @@ def show_admin_dashboard():
     with admin_col3:
         st.markdown(
             """
-            <div style="background:#0f172a; padding:15px; border-radius:8px; text-align:center;">
+            <div style="background:rgba(15,23,42,0.58); padding:15px; border-radius:8px; text-align:center; border:1px solid rgba(148,163,184,0.30); box-shadow:0px 10px 24px rgba(2,6,23,0.34); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color:#e2e8f0;">
             <b>⚡ System Health</b><br>
             <small>Monitor performance</small>
             </div>

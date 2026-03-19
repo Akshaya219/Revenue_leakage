@@ -120,7 +120,7 @@ def show_department_info():
         
         st.markdown(
             f"""
-            <div style="background:#1e293b; padding:15px; border-radius:10px;">
+            <div style="background:rgba(15,23,42,0.58); padding:15px; border-radius:10px; border:1px solid rgba(148,163,184,0.30); box-shadow:0px 10px 24px rgba(2,6,23,0.36); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color:#e2e8f0;">
             <b>👤 User:</b> {user_name}<br>
             <b>🏢 Department:</b> {user_dept}<br>
             <b>📊 Access Level:</b> Department Head

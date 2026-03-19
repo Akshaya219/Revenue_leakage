@@ -13,48 +13,70 @@ def login_screen():
         <style>
 
         .login-container{
-            background:#1e293b;
-            padding:40px;
+            background:rgba(15,23,42,0.58);
+            padding:28px;
             border-radius:12px;
-            width:400px;
+            width:360px;
             margin:auto;
-            margin-top:80px;
-            box-shadow:0px 4px 20px rgba(0,0,0,0.5);
+            margin-top:48px;
+            box-shadow:0px 14px 34px rgba(2,6,23,0.40);
+            border:1px solid rgba(148,163,184,0.30);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
         .login-title{
             text-align:center;
-            font-size:26px;
+            font-size:24px;
             font-weight:600;
             margin-bottom:10px;
-            color:#fff;
+            color:#f8fafc;
         }
 
         .login-subtitle{
             text-align:center;
             font-size:14px;
-            color:#94a3b8;
-            margin-bottom:30px;
+            color:#cbd5e1;
+            margin-bottom:20px;
+        }
+
+        .login-container [data-testid="stTextInput"] input,
+        .login-container [data-testid="stSelectbox"] div[data-baseweb="select"] {
+            min-height: 2.2rem;
+        }
+
+        .login-container [data-testid="stTextInput"],
+        .login-container [data-testid="stSelectbox"],
+        .login-container [data-testid="stFormSubmitButton"] {
+            max-width: 260px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .info-box{
-            background:#0f172a;
+            background:rgba(15,23,42,0.66);
             border-left:4px solid #3b82f6;
             padding:12px;
             border-radius:6px;
             font-size:12px;
             color:#cbd5e1;
             margin-bottom:20px;
+            border:1px solid rgba(59,130,246,0.42);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .admin-alert{
-            background:#0f172a;
+            background:rgba(69,26,3,0.45);
             border-left:4px solid #f59e0b;
             padding:12px;
             border-radius:6px;
             font-size:12px;
-            color:#fcd34d;
+            color:#fde68a;
             margin-bottom:20px;
+            border:1px solid rgba(245,158,11,0.45);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         </style>
@@ -71,31 +93,33 @@ def login_screen():
         unsafe_allow_html=True
     )
 
-    # Use form to group inputs and prevent rerun on each field change
-    with st.form("login_form", clear_on_submit=True):
-        st.markdown("**Login Credentials**")
-        username = st.text_input(
-            "Username",
-            placeholder="e.g., admin or cardiology_head",
-            key="login_username"
-        )
-        password = st.text_input(
-            "Password",
-            type="password",
-            placeholder="Enter your password",
-            key="login_password"
-        )
+    # Keep form values stable after submit so department selection is reliable.
+    with st.form("login_form"):
+        _, form_col, _ = st.columns([1, 2, 1])
+        with form_col:
+            st.markdown("**Login Credentials**")
+            username = st.text_input(
+                "Username",
+                placeholder="e.g., admin or cardiology_head",
+                key="login_username"
+            )
+            password = st.text_input(
+                "Password",
+                type="password",
+                placeholder="Enter your password",
+                key="login_password"
+            )
 
-        # Department selection (hidden for admin)
-        st.markdown("**Select Department** (Department Heads only)")
-        selected_department = st.selectbox(
-            "Department",
-            options=DEPARTMENTS,
-            label_visibility="collapsed",
-            key="dept_select"
-        )
+            # Department selection (hidden for admin)
+            st.markdown("**Select Department** (Department Heads only)")
+            selected_department = st.selectbox(
+                "Department",
+                options=DEPARTMENTS,
+                label_visibility="collapsed",
+                key="dept_select"
+            )
 
-        login = st.form_submit_button("Login", use_container_width=True, type="primary")
+            login = st.form_submit_button("Login", use_container_width=True, type="primary")
 
     # Info boxes with credentials
     st.markdown(
@@ -125,6 +149,9 @@ def login_screen():
     )
 
     if login:
+        username = username.strip() if username else ""
+        password = password.strip() if password else ""
+
         if not username or not password:
             st.error("❌ Please enter both username and password")
             return

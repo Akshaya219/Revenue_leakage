@@ -67,11 +67,16 @@ with st.sidebar:
         st.markdown(
             f"""
             <div style="
-            background:linear-gradient(135deg, #f59e0b, #1e293b);
+            background:rgba(69, 26, 3, 0.46);
             padding:15px;
             border-radius:10px;
             margin-bottom:20px;
+            border:1px solid rgba(245, 158, 11, 0.45);
             border-left:4px solid #f59e0b;
+            box-shadow:0px 10px 24px rgba(2, 6, 23, 0.38);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color:#fde68a;
             ">
             <b>👨‍💼 Admin User:</b> {user}<br>
             <b>🔑 Access Level:</b> System Administrator<br>
@@ -84,10 +89,15 @@ with st.sidebar:
         st.markdown(
             f"""
             <div style="
-            background:#1e293b;
+            background:rgba(15, 23, 42, 0.58);
             padding:15px;
             border-radius:10px;
             margin-bottom:20px;
+            border:1px solid rgba(148, 163, 184, 0.30);
+            box-shadow:0px 10px 24px rgba(2, 6, 23, 0.38);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            color:#e2e8f0;
             ">
             <b>👤 User:</b> {user}<br>
             <b>🏢 Department:</b> {department}<br>

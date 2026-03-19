@@ -30,7 +30,7 @@ def show_department_dashboard():
     
     st.markdown(
         f"""
-        <div style="background:#0f172a; padding:12px; border-radius:6px; border-left:4px solid #3b82f6; margin-bottom:20px;">
+        <div style="background:rgba(15,23,42,0.58); padding:12px; border-radius:6px; border-left:4px solid #3b82f6; margin-bottom:20px; color:#bfdbfe; border:1px solid rgba(59,130,246,0.42); box-shadow:0px 10px 24px rgba(2,6,23,0.34); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
         <b>🔒 Restricted Access:</b> You can only view data for the <b>{user_department}</b> department.
         </div>
         """,

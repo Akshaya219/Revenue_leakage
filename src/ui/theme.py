@@ -6,6 +6,8 @@ def apply_theme():
         """
         <style>
 
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap');
+
         :root {
             --app-bg-top: #020617;
             --app-bg-bottom: #0f172a;
@@ -18,10 +20,19 @@ def apply_theme():
             --accent-2: #2563eb;
         }
 
+        .stApp * {
+            font-family: 'Manrope', sans-serif;
+        }
+
         /* MAIN APP BACKGROUND */
         .stApp {
             background: linear-gradient(180deg, var(--app-bg-top), var(--app-bg-bottom));
             color: var(--text-primary);
+        }
+
+        /* MAIN CONTENT SPACING */
+        .block-container {
+            padding-top: 1.3rem;
         }
 
         /* SIDEBAR */

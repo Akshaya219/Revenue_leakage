@@ -12,71 +12,148 @@ def login_screen():
         """
         <style>
 
-        .login-container{
-            background:rgba(15,23,42,0.58);
-            padding:28px;
-            border-radius:12px;
-            width:360px;
-            margin:auto;
-            margin-top:48px;
-            box-shadow:0px 14px 34px rgba(2,6,23,0.40);
-            border:1px solid rgba(148,163,184,0.30);
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700&display=swap');
+
+        .stApp * {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        section.main > div.block-container {
+            min-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 0.6rem;
+            padding-bottom: 0.6rem;
+        }
+
+        .login-panel{
+            background: rgba(15, 23, 42, 0.64);
+            border: 1px solid rgba(148, 163, 184, 0.30);
+            border-radius: 16px;
+            padding: 26px;
+            box-shadow: 0px 16px 36px rgba(2, 6, 23, 0.40);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
         }
 
-        .login-title{
-            text-align:center;
-            font-size:24px;
-            font-weight:600;
-            margin-bottom:10px;
-            color:#f8fafc;
+        .login-eyebrow {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #93c5fd;
+            margin-bottom: 8px;
+            text-align: center;
         }
 
-        .login-subtitle{
-            text-align:center;
-            font-size:14px;
-            color:#cbd5e1;
-            margin-bottom:20px;
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin: 0;
+            line-height: 1.2;
+            text-align: center;
         }
 
-        .login-container [data-testid="stTextInput"] input,
-        .login-container [data-testid="stSelectbox"] div[data-baseweb="select"] {
+        .login-subtitle {
+            margin-top: 10px;
+            margin-bottom: 22px;
+            color: #cbd5e1;
+            font-size: 14px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .support-panel {
+            background: rgba(15, 23, 42, 0.50);
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0px 12px 30px rgba(2, 6, 23, 0.35);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            height: 100%;
+        }
+
+        .support-title {
+            color: #f8fafc;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .support-text {
+            color: #cbd5e1;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .credential-block {
+            background: rgba(30, 41, 59, 0.62);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+        }
+
+        .credential-title {
+            color: #f1f5f9;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .credential-line {
+            color: #cbd5e1;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .credential-line code {
+            color: #93c5fd;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 6px;
+            padding: 1px 6px;
+        }
+
+        .login-panel [data-testid="stTextInput"] input,
+        .login-panel [data-testid="stSelectbox"] div[data-baseweb="select"] {
             min-height: 2.2rem;
+            background: rgba(30, 41, 59, 0.58);
+            border: 1px solid rgba(148, 163, 184, 0.30);
+            color: #e2e8f0;
+            border-radius: 10px;
         }
 
-        .login-container [data-testid="stTextInput"],
-        .login-container [data-testid="stSelectbox"],
-        .login-container [data-testid="stFormSubmitButton"] {
-            max-width: 260px;
-            margin-left: auto;
-            margin-right: auto;
+        .login-panel [data-testid="stFormSubmitButton"] button {
+            margin-top: 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            height: 2.8rem;
         }
 
-        .info-box{
-            background:rgba(15,23,42,0.66);
-            border-left:4px solid #3b82f6;
-            padding:12px;
-            border-radius:6px;
-            font-size:12px;
-            color:#cbd5e1;
-            margin-bottom:20px;
-            border:1px solid rgba(59,130,246,0.42);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        .login-panel [data-testid="stMarkdownContainer"] p {
+            color: #e2e8f0;
         }
 
-        .admin-alert{
-            background:rgba(69,26,3,0.45);
-            border-left:4px solid #f59e0b;
-            padding:12px;
-            border-radius:6px;
-            font-size:12px;
-            color:#fde68a;
-            margin-bottom:20px;
-            border:1px solid rgba(245,158,11,0.45);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        @media (max-width: 900px) {
+            section.main > div.block-container {
+                min-height: auto;
+                display: block;
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+
+            .login-panel,
+            .support-panel {
+                padding: 18px;
+            }
+            .login-title {
+                font-size: 24px;
+            }
         }
 
         </style>
@@ -84,34 +161,40 @@ def login_screen():
         unsafe_allow_html=True
     )
 
-    st.markdown(
-        """
-        <div class="login-container">
-        <div class="login-title">🏥 Hospital Revenue Intelligence</div>
-        <div class="login-subtitle">Department Head & Admin Access Portal</div>
-        """,
-        unsafe_allow_html=True
-    )
+    left_space, center_col, right_space = st.columns([0.08, 0.84, 0.08])
+    with center_col:
+        form_col, info_col = st.columns([1.25, 1.0], gap="large")
 
-    # Keep form values stable after submit so department selection is reliable.
-    with st.form("login_form"):
-        _, form_col, _ = st.columns([1, 2, 1])
-        with form_col:
-            st.markdown("**Login Credentials**")
+    with form_col:
+        st.markdown(
+            """
+            <div class="login-panel">
+            <div class="login-eyebrow">Secure Access</div>
+            <h1 class="login-title">🏥 Hospital Revenue Intelligence</h1>
+            <p class="login-subtitle">Sign in with your role-based credentials to continue to your dashboard.</p>
+            """,
+            unsafe_allow_html=True
+        )
+
+        # Keep form values stable after submit so department selection is reliable.
+        with st.form("login_form"):
+            st.markdown("**Username**")
             username = st.text_input(
                 "Username",
                 placeholder="e.g., admin or cardiology_head",
+                label_visibility="collapsed",
                 key="login_username"
             )
+            st.markdown("**Password**")
             password = st.text_input(
                 "Password",
                 type="password",
                 placeholder="Enter your password",
+                label_visibility="collapsed",
                 key="login_password"
             )
 
-            # Department selection (hidden for admin)
-            st.markdown("**Select Department** (Department Heads only)")
+            st.markdown("**Department**")
             selected_department = st.selectbox(
                 "Department",
                 options=DEPARTMENTS,
@@ -119,34 +202,36 @@ def login_screen():
                 key="dept_select"
             )
 
-            login = st.form_submit_button("Login", use_container_width=True, type="primary")
+            login = st.form_submit_button("Sign In", use_container_width=True, type="primary")
 
-    # Info boxes with credentials
-    st.markdown(
-        """
-        <div class="admin-alert">
-        <strong>⚡ System Admin:</strong><br>
-        • Username: <code>admin</code><br>
-        • Password: <code>Admin@123</code><br>
-        <em>Ignore department selection - view all data</em>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+        st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown(
-        """
-        <div class="info-box">
-        <strong>Department Heads:</strong><br>
-        • Cardiology: cardiology_head / Cardiology@123<br>
-        • Emergency: emergency_head / Emergency@123<br>
-        • Medicine: medicine_head / Medicine@123<br>
-        • Neurology: neurology_head / Neurology@123<br>
-        • Orthopedics: orthopedics_head / Orthopedics@123
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    with info_col:
+        st.markdown(
+            """
+            <div class="support-panel">
+              <div class="support-title">Quick Access Credentials</div>
+              <div class="support-text">Use these accounts for testing and role-based views.</div>
+
+              <div class="credential-block">
+                <div class="credential-title">System Admin</div>
+                <div class="credential-line">Username: <code>admin</code></div>
+                <div class="credential-line">Password: <code>Admin@123</code></div>
+                <div class="credential-line">Department: Any selection works</div>
+              </div>
+
+              <div class="credential-block">
+                <div class="credential-title">Department Heads</div>
+                <div class="credential-line"><code>cardiology_head</code> / <code>Cardiology@123</code></div>
+                <div class="credential-line"><code>emergency_head</code> / <code>Emergency@123</code></div>
+                <div class="credential-line"><code>medicine_head</code> / <code>Medicine@123</code></div>
+                <div class="credential-line"><code>neurology_head</code> / <code>Neurology@123</code></div>
+                <div class="credential-line"><code>orthopedics_head</code> / <code>Orthopedics@123</code></div>
+              </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     if login:
         username = username.strip() if username else ""
@@ -192,5 +277,3 @@ def login_screen():
                 "❌ Invalid credentials or department mismatch. "
                 "Please verify your username, password, and selected department."
             )
-
-    st.markdown("</div>", unsafe_allow_html=True)
